@@ -6,10 +6,22 @@ in randomised quick sort, pivot is randomly chosen and then recursively sort the
 left and right sub-arrays. The expected running time of the algorithm is
 O(nlog(n)).
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <errno.h>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+#include <cstdio>
+#include <climits>
+#include <cstring>
+#include <string>
+#include <cstdint>
+#include "System.hpp"
+using namespace std;
+
+//esse é brabo
+//g++ ./lib/System.cpp algorithms/quick_sort.cpp -o bin/quick_sort -I./lib/ -I. -lm -lpapi
+//g++ -I. -I./lib/ ./lib/System.cpp algorithms/quick_sort.cpp -lm -o bin/quick_sort.cpp
 
 int getBig(int64_t *a, int i, int right, int pivot)
 {
@@ -86,7 +98,7 @@ int main(int argc, char const *argv[])
     argv[2] -> number of elements
     */
    
-    printf("aaaaaaaaaaaaa\n");
+    printf("KKKKKKKKKKKKKKK\n");
     srand(time(NULL));
     int num = atoi(argv[2]);
     printf("Filename: %s\nSize: %d\n", argv[1], atoi(argv[2]));
@@ -95,15 +107,24 @@ int main(int argc, char const *argv[])
     for (int i = 0; i < num; i++)
     {
         fscanf(fp, "%ld", &arr[i]);
-        printf("%ld ", arr[i]);
     }
     fclose(fp);
+    Events events;
+    events.setNumberOfEvents(3);
+    events.addEvents(PAPI_TOT_CYC);
+    events.addEvents(PAPI_REF_CYC);
+    events.addEvents(PAPI_L3_TCM);
+    events.start();
     clock_t begin = clock();
     random_quick(arr, 0, num - 1);
     clock_t end = clock();
+    events.stop();
+    cout << "PAPI_TOT_CYC: " << events.getEventbyIndex(0)  << endl;
+    cout << "PAPI_REF_CYC: " << events.getEventbyIndex(1)  << endl;
+    cout << "PAPI_L3_TCM: " << events.getEventbyIndex(2)  << endl;
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     FILE *dataFile = fopen("./results/result_quick_sort.txt", "a");
-    fprintf(dataFile, "%d;%.10lf\n", num, time_spent);
+    fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2));
     fclose(dataFile);
 
     free(arr);

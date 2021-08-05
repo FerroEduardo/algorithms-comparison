@@ -17,12 +17,18 @@
  * in each step.
  * Time Complexity : O(Nlog(N))
  */
-
-#include <assert.h>   /// for assert
-#include <stdio.h>    /// for IO operations
-#include <stdlib.h>   /// for dynamic memory allocation
-#include <time.h>     /// for random numbers generation
-#include <inttypes.h> /// for uint8_t, int8_t
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <iomanip>
+#include <cassert>
+#include <cstdio>
+#include <climits>
+#include <cstring>
+#include <string>
+#include <cstdint>
+#include "System.hpp"
+using namespace std;
 
 /**
  * @brief Swapped two numbers using pointer
@@ -140,12 +146,21 @@ int main(int argc, char const *argv[])
         fscanf(fp, "%ld", &arr[i]);
     }
     fclose(fp);
+    Events events;
+    events.setNumberOfEvents(3);
+    events.addEvents(PAPI_TOT_CYC);
+    events.addEvents(PAPI_REF_CYC);
+    events.addEvents(PAPI_L3_TCM);
+    events.start();
     clock_t begin = clock();
     heapSort(arr, num);
     clock_t end = clock();
+    cout << "PAPI_TOT_CYC: " << events.getEventbyIndex(0)  << endl;
+    cout << "PAPI_REF_CYC: " << events.getEventbyIndex(1)  << endl;
+    cout << "PAPI_L3_TCM: " << events.getEventbyIndex(2)  << endl;
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     FILE *dataFile = fopen("./results/result_heap_sort.txt", "a");
-    fprintf(dataFile, "%d;%lf\n", num, time_spent);
+    fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2));
     fclose(dataFile);
 
 
