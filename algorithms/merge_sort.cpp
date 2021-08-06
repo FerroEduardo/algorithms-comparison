@@ -14,6 +14,7 @@
 #include <string>
 #include <cstdint>
 #include "System.hpp"
+#include "App.hpp"
 using namespace std;
 
 /**
@@ -129,14 +130,15 @@ int main(int argc, char const *argv[])
     events.addEvents(PAPI_REF_CYC);
     events.addEvents(PAPI_L3_TCM);
     events.start();
-    clock_t begin = clock();
+    Stopwatch stopwatch;
+    START_STOPWATCH(stopwatch);
     merge_sort(arr, num, 0, num - 1);
-    clock_t end = clock();
+    STOP_STOPWATCH(stopwatch);
     events.stop();
-    cout << "PAPI_TOT_CYC: " << events.getEventbyIndex(0)  << endl;
-    cout << "PAPI_REF_CYC: " << events.getEventbyIndex(1)  << endl;
-    cout << "PAPI_L3_TCM: " << events.getEventbyIndex(2)  << endl;
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    // cout << "PAPI_TOT_CYC: " << events.getEventbyIndex(0)  << endl;
+    // cout << "PAPI_REF_CYC: " << events.getEventbyIndex(1)  << endl;
+    // cout << "PAPI_L3_TCM: " << events.getEventbyIndex(2)  << endl;
+    double time_spent = stopwatch.mElapsedTime;
     FILE *dataFile = fopen("./results/result_merge_sort.txt", "a");
     fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2));
     fclose(dataFile);
