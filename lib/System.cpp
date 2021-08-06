@@ -48,20 +48,20 @@ long long Cycles::getCycles(void){
 }
 
 
-Stopwatch::Stopwatch():
-System(),
-mElapsedTime(0.0f)
-{}
+// Stopwatch::Stopwatch():
+// System(),
+// mElapsedTime(0.0f)
+// {}
 
-Stopwatch::~Stopwatch(){}
+// Stopwatch::~Stopwatch(){}
 
-void Stopwatch::start(void){ gettimeofday( &mStartTime, 0); }
-void Stopwatch::stop(void){
-    gettimeofday( &mStopTime, 0);                                                     \
-    mElapsedTime = (1000.0f * (mStopTime.tv_sec - mStartTime.tv_sec) + (0.001f * (mStopTime.tv_usec -mStartTime.tv_usec)));
-}
+// void Stopwatch::start(void){ gettimeofday( &mStartTime, 0); }
+// void Stopwatch::stop(void){
+//     gettimeofday( &mStopTime, 0);                                                     \
+//     mElapsedTime = (1000.0f * (mStopTime.tv_sec - mStartTime.tv_sec) + (0.001f * (mStopTime.tv_usec -mStartTime.tv_usec)));
+// }
 
-double Stopwatch::getElapsedtime(void){ return mElapsedTime; }
+// double Stopwatch::getElapsedtime(void){ return mElapsedTime; }
 
 Events::Events():
 System(),

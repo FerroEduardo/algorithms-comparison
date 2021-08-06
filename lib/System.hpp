@@ -30,21 +30,21 @@ private:
               stopcycles;
 };
 
-class Stopwatch:public System{
-public:
-    Stopwatch();
-    ~Stopwatch();
-    void start(void);
-    void stop(void);
-    double getElapsedtime(void);
+// class Stopwatch:public System{
+// public:
+//     Stopwatch();
+//     ~Stopwatch();
+//     void start(void);
+//     void stop(void);
+//     double getElapsedtime(void);
 
-private:
+// private:
 
-    timeval mStartTime,
-            mStopTime;
+//     timeval mStartTime,
+//             mStopTime;
 
-    double mElapsedTime;
-};
+//     double mElapsedTime;
+// };
 
 class Events:public System{
 public:
