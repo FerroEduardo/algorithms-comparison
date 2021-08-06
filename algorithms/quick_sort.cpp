@@ -98,7 +98,6 @@ int main(int argc, char const *argv[])
     argv[2] -> number of elements
     */
    
-    printf("KKKKKKKKKKKKKKK\n");
     srand(time(NULL));
     int num = atoi(argv[2]);
     printf("Filename: %s\nSize: %d\n", argv[1], atoi(argv[2]));
