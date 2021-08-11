@@ -109,10 +109,11 @@ int main(int argc, char const *argv[])
     }
     fclose(fp);
     Events events;
-    events.setNumberOfEvents(3);
+    events.setNumberOfEvents(4);
     events.addEvents(PAPI_TOT_CYC);
     events.addEvents(PAPI_REF_CYC);
     events.addEvents(PAPI_L3_TCM);
+    events.addEvents(PAPI_TOT_INS);
     events.start();
     Stopwatch stopwatch;
     FREQUENCY(stopwatch);
@@ -127,7 +128,7 @@ int main(int argc, char const *argv[])
     string processor = argv[3];
     string filepath = "./results/processors/" + processor + "/result_quick_sort.txt";
     FILE *dataFile = fopen(filepath.c_str(), "a");
-    fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld;%ld;%lu\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2), num * sizeof(int64_t), nInstr);
+    fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld;%ld;%lu;%lld\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2), num * sizeof(int64_t), nInstr, events.getEventbyIndex(3));
     fclose(dataFile);
 
     free(arr);
