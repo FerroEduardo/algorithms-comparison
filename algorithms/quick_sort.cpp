@@ -6,14 +6,7 @@ in randomised quick sort, pivot is randomly chosen and then recursively sort the
 left and right sub-arrays. The expected running time of the algorithm is
 O(nlog(n)).
 */
-#include <cmath>
-#include <cstdlib>
 #include <iostream>
-#include <iomanip>
-#include <cassert>
-#include <cstdio>
-#include <climits>
-#include <cstring>
 #include <string>
 #include <cstdint>
 #include "System.hpp"
@@ -22,6 +15,7 @@ using namespace std;
 
 //esse é brabo
 //g++ ./lib/System.cpp algorithms/quick_sort.cpp -o bin/quick_sort -I./lib/ -I. -lm -lpapi
+//g++ algorithms/quick.cpp -S -m64 -O0
 //g++ -I. -I./lib/ ./lib/System.cpp algorithms/quick_sort.cpp -lm -o bin/quick_sort.cpp
 
 int getBig(int64_t *a, int i, int right, int pivot)
@@ -97,12 +91,17 @@ int main(int argc, char const *argv[])
     /*
     argv[1] -> file to read
     argv[2] -> number of elements
+    argv[3] -> processor name
     */
    
-    srand(time(NULL));
+    srand(99);
     int num = atoi(argv[2]);
+    uint64_t nInstr = 350;
+    nInstr *= num; //Prevent overflow
+    nInstr *= num; //Worst O(n*n)
     printf("Filename: %s\nSize: %d\n", argv[1], atoi(argv[2]));
-    int64_t *arr = (int64_t *)malloc(num * sizeof(int64_t));
+    int64_t *arr;// = (int64_t *)malloc(num * sizeof(int64_t));
+    posix_memalign(reinterpret_cast <void**>(&arr), 64, num * sizeof(int64_t));
     FILE *fp = fopen(argv[1], "r");
     for (int i = 0; i < num; i++)
     {
@@ -116,16 +115,19 @@ int main(int argc, char const *argv[])
     events.addEvents(PAPI_L3_TCM);
     events.start();
     Stopwatch stopwatch;
+    FREQUENCY(stopwatch);
     START_STOPWATCH(stopwatch);
     random_quick(arr, 0, num - 1);
     STOP_STOPWATCH(stopwatch);
     events.stop();
-    cout << "PAPI_TOT_CYC: " << events.getEventbyIndex(0)  << endl;
-    cout << "PAPI_REF_CYC: " << events.getEventbyIndex(1)  << endl;
-    cout << "PAPI_L3_TCM: " << events.getEventbyIndex(2)  << endl;
+    // cout << "PAPI_TOT_CYC: " << events.getEventbyIndex(0)  << endl;
+    // cout << "PAPI_REF_CYC: " << events.getEventbyIndex(1)  << endl;
+    // cout << "PAPI_L3_TCM: " << events.getEventbyIndex(2)  << endl;
     double time_spent = stopwatch.mElapsedTime;
-    FILE *dataFile = fopen("./results/result_quick_sort.txt", "a");
-    fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2));
+    string processor = argv[3];
+    string filepath = "./results/processors/" + processor + "/result_quick_sort.txt";
+    FILE *dataFile = fopen(filepath.c_str(), "a");
+    fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld;%ld;%lu\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2), num * sizeof(int64_t), nInstr);
     fclose(dataFile);
 
     free(arr);

@@ -3,16 +3,10 @@
  * @brief Implementation of [merge
  * sort](https://en.wikipedia.org/wiki/Merge_sort) algorithm
  */
-#include <cmath>
-#include <cstdlib>
 #include <iostream>
-#include <iomanip>
-#include <cassert>
-#include <cstdio>
-#include <climits>
-#include <cstring>
 #include <string>
 #include <cstdint>
+#include <math.h>
 #include "System.hpp"
 #include "App.hpp"
 using namespace std;
@@ -116,7 +110,11 @@ int main(int argc, char const *argv[])
     argv[2] -> number of elements
     */
     int num = atoi(argv[2]);
-    int64_t *arr = (int64_t *)malloc(num * sizeof(int64_t));
+    uint64_t nInstr = 351;
+    nInstr *= num; //Prevent overflow
+    nInstr *= log10(num); //Worst O(n log n)
+    int64_t *arr;// = (int64_t *)malloc(num * sizeof(int64_t));
+    posix_memalign(reinterpret_cast <void**>(&arr), 64, num * sizeof(int64_t));
     FILE *fp = fopen(argv[1], "r");
     for (int i = 0; i < num; i++)
     {
@@ -131,6 +129,7 @@ int main(int argc, char const *argv[])
     events.addEvents(PAPI_L3_TCM);
     events.start();
     Stopwatch stopwatch;
+    FREQUENCY(stopwatch);
     START_STOPWATCH(stopwatch);
     merge_sort(arr, num, 0, num - 1);
     STOP_STOPWATCH(stopwatch);
@@ -139,8 +138,10 @@ int main(int argc, char const *argv[])
     // cout << "PAPI_REF_CYC: " << events.getEventbyIndex(1)  << endl;
     // cout << "PAPI_L3_TCM: " << events.getEventbyIndex(2)  << endl;
     double time_spent = stopwatch.mElapsedTime;
-    FILE *dataFile = fopen("./results/result_merge_sort.txt", "a");
-    fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2));
+    string processor = argv[3];
+    string filepath = "./results/processors/" + processor + "/result_merge_sort.txt";
+    FILE *dataFile = fopen(filepath.c_str(), "a");
+    fprintf(dataFile, "%d;%.10lf;%lld;%lld;%lld;%ld;%lu\n", num, time_spent, events.getEventbyIndex(0), events.getEventbyIndex(1), events.getEventbyIndex(2), num * sizeof(int64_t), nInstr);
     fclose(dataFile);
 
     free(arr);
