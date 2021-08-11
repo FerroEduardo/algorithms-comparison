@@ -99,7 +99,7 @@ int main(int argc, char const *argv[])
     uint64_t nInstr = 350;
     nInstr *= num; //Prevent overflow
     nInstr *= num; //Worst O(n*n)
-    printf("Filename: %s\nSize: %d\n", argv[1], atoi(argv[2]));
+//     printf("Filename: %s\nSize: %d\n", argv[1], atoi(argv[2]));
     int64_t *arr;// = (int64_t *)malloc(num * sizeof(int64_t));
     posix_memalign(reinterpret_cast <void**>(&arr), 64, num * sizeof(int64_t));
     FILE *fp = fopen(argv[1], "r");
@@ -110,8 +110,8 @@ int main(int argc, char const *argv[])
     fclose(fp);
     Events events;
     events.setNumberOfEvents(4);
-    events.addEvents(PAPI_TOT_CYC);
-    events.addEvents(PAPI_REF_CYC);
+    events.addEvents(PAPI_L1_TCM);
+    events.addEvents(PAPI_L2_TCM);
     events.addEvents(PAPI_L3_TCM);
     events.addEvents(PAPI_TOT_INS);
     events.start();

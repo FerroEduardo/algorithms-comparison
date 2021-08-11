@@ -124,8 +124,8 @@ int main(int argc, char const *argv[])
     fclose(fp);
     Events events;
     events.setNumberOfEvents(4);
-    events.addEvents(PAPI_TOT_CYC);
-    events.addEvents(PAPI_REF_CYC);
+    events.addEvents(PAPI_L1_TCM);
+    events.addEvents(PAPI_L2_TCM);
     events.addEvents(PAPI_L3_TCM);
     events.addEvents(PAPI_TOT_INS);
     events.start();
