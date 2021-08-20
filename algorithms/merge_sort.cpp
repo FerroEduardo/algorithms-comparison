@@ -37,7 +37,8 @@ void swap(int64_t *a, int64_t *b)
  */
 void merge(int64_t *a, int l, int r, int n)
 {
-    int64_t *b = (int64_t *)malloc(n * sizeof(int64_t)); /* dynamic memory must be freed */
+    int64_t *b; // = (int64_t *)malloc(n * sizeof(int64_t)); /* dynamic memory must be freed */
+    posix_memalign(reinterpret_cast <void**>(&b), 64, n * sizeof(int64_t));
     int c = l;
     int p1, p2;
     p1 = l;
